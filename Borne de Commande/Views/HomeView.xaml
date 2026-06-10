@@ -1,0 +1,79 @@
+<UserControl x:Class="Borne_de_Commande.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource PrimaryBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Titre + CTA -->
+            <RowDefinition Height="Auto" />
+            <!-- Grille categories -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ══════════════════════════════════════════════════════════
+             Titre + bouton commencer
+             ══════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Padding="32 28 32 16">
+            <StackPanel>
+                <TextBlock Text="Bienvenue !" FontSize="28" FontWeight="Bold"
+                           Foreground="{StaticResource TextBrush}" />
+                <TextBlock Text="Choisissez une categorie pour commencer votre commande"
+                           FontSize="15" Foreground="{StaticResource MutedBrush}"
+                           Margin="0 4 0 0" />
+            </StackPanel>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════
+             Grille des categories (cards cliquables)
+             ══════════════════════════════════════════════════════════ -->
+        <ScrollViewer Grid.Row="1" Padding="24 0 24 24">
+            <ItemsControl ItemsSource="{Binding Categories}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="200" Height="140" Margin="10"
+                                CornerRadius="12" Cursor="Hand">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#0F3460" Offset="0" />
+                                    <GradientStop Color="#1A1A2E" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.CommanderDepuisCategorieCommand,
+                                                        RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                              CommandParameter="{Binding}" />
+                            </Border.InputBindings>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="16">
+                                <TextBlock Text="&#127869;" FontSize="36"
+                                           HorizontalAlignment="Center" Margin="0 0 0 10" />
+                                <TextBlock Text="{Binding Nom}" FontSize="17" FontWeight="Bold"
+                                           Foreground="White" HorizontalAlignment="Center"
+                                           TextAlignment="Center" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Description}"
+                                           FontSize="11" Foreground="#CCCCCC"
+                                           HorizontalAlignment="Center" TextAlignment="Center"
+                                           TextWrapping="Wrap" Margin="0 4 0 0" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

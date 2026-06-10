@@ -1,0 +1,122 @@
+<Window x:Class="Borne_de_Commande.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Borne de Commande" Height="768" Width="1280"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource PrimaryBrush}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ══════════════════════════════════════════════════════════
+             Barre laterale de navigation
+             ══════════════════════════════════════════════════════════ -->
+        <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}">
+            <DockPanel>
+
+                <!-- ── Logo ─── -->
+                <Border DockPanel.Dock="Top" Background="{StaticResource AccentBrush}" Padding="16 24">
+                    <StackPanel>
+                        <TextBlock Text="&#127828;" FontSize="32" HorizontalAlignment="Center" />
+                        <TextBlock Text="Borne de" FontSize="14" FontWeight="Bold"
+                                   Foreground="White" HorizontalAlignment="Center" />
+                        <TextBlock Text="Commande" FontSize="14" FontWeight="Bold"
+                                   Foreground="White" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ── Utilisateur connecte (bas de barre) ─── -->
+                <Border DockPanel.Dock="Bottom" Margin="12 0 12 12"
+                        Background="{StaticResource CardBrush}" CornerRadius="6" Padding="10 8">
+                    <StackPanel>
+                        <TextBlock Text="Connecte en tant que :"
+                                   Foreground="{StaticResource MutedBrush}" FontSize="9"
+                                   Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVis}}"/>
+                        <TextBlock Text="{Binding UserDisplayName}"
+                                   Foreground="White" FontSize="11" FontWeight="Bold"
+                                   TextWrapping="Wrap"/>
+                        <Button Content="Deconnexion"
+                                Command="{Binding LogoutCommand}"
+                                Style="{StaticResource DangerButton}"
+                                Padding="4 5" FontSize="10" Margin="0 6 0 0"
+                                HorizontalAlignment="Stretch"
+                                Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVis}}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── Boutons de navigation ─── -->
+                <StackPanel Margin="12 20 12 0">
+
+                    <!-- Interface client (masquee pour le role cuisine) -->
+                    <StackPanel Visibility="{Binding IsClientAccessAllowed, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="CLIENT" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                   Margin="4 0 0 6" FontWeight="Bold" />
+                        <Button Content="&#127968;  Accueil"
+                                Command="{Binding NavigateHomeCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0 2" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left" Padding="14 10" />
+                        <Button Content="&#128722;  Commander"
+                                Command="{Binding NavigateBorneCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0 2" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left" Padding="14 10" />
+                    </StackPanel>
+
+                    <!-- Bouton connexion (visible seulement quand non connecte) -->
+                    <Button Content="&#128274;  Se connecter"
+                            Command="{Binding ConnexionCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Margin="0 14 0 2" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left" Padding="14 10"
+                            Visibility="{Binding IsNotAuthenticated, Converter={StaticResource BoolToVis}}" />
+
+                    <!-- Interface cuisine (masquee jusqu'a connexion) -->
+                    <StackPanel Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="CUISINE" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                   Margin="4 14 0 6" FontWeight="Bold" />
+                        <Button Content="&#128104;&#8205;&#127859;  Suivi commandes"
+                                Command="{Binding NavigateCuisineCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0 2" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left" Padding="14 10" />
+                    </StackPanel>
+
+                    <!-- Administration (masquee — admin uniquement) -->
+                    <StackPanel Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="ADMINISTRATION" FontSize="10" Foreground="{StaticResource MutedBrush}"
+                                   Margin="4 14 0 6" FontWeight="Bold" />
+                        <Button Content="&#128193;  Categories"
+                                Command="{Binding NavigateCategoriesCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0 2" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left" Padding="14 10" />
+                        <Button Content="&#127869;  Produits"
+                                Command="{Binding NavigateProduitsCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0 2" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left" Padding="14 10" />
+                        <Button Content="&#128101;  Utilisateurs"
+                                Command="{Binding NavigateUsersCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0 2" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left" Padding="14 10" />
+                    </StackPanel>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════
+             Zone de contenu — vue selectionnee via DataTemplate
+             ══════════════════════════════════════════════════════════ -->
+        <ContentControl Grid.Column="1"
+                        Content="{Binding CurrentViewModel}" />
+    </Grid>
+</Window>

@@ -1,0 +1,99 @@
+<UserControl x:Class="Borne_de_Commande.Views.PaiementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource PrimaryBrush}">
+
+    <!-- Resources MUST be declared before any StaticResource usage -->
+    <UserControl.Resources>
+        <local:StringEqualityConverter x:Key="EqConverter"
+            xmlns:local="clr-namespace:Borne_de_Commande.Views" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Border MaxWidth="600" VerticalAlignment="Center" HorizontalAlignment="Center"
+                Background="{StaticResource SurfaceBrush}" CornerRadius="12"
+                Padding="32" Margin="24">
+            <StackPanel>
+                <!-- Titre -->
+                <TextBlock Text="💳  Paiement" FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource TextBrush}"
+                           HorizontalAlignment="Center" Margin="0 0 0 8" />
+
+                <!-- Info client -->
+                <Border Background="{StaticResource CardBrush}" CornerRadius="6"
+                        Padding="10 6" HorizontalAlignment="Center" Margin="0 0 0 20">
+                    <TextBlock Text="{Binding InfoClient}"
+                               Foreground="{StaticResource MutedBrush}" FontSize="12" />
+                </Border>
+
+                <!-- Recapitulatif des articles -->
+                <Border Background="{StaticResource CardBrush}" CornerRadius="8"
+                        Padding="16" Margin="0 0 0 16">
+                    <StackPanel>
+                        <TextBlock Text="Recapitulatif" FontSize="14" FontWeight="Bold"
+                                   Foreground="{StaticResource MutedBrush}" Margin="0 0 0 12" />
+                        <ItemsControl ItemsSource="{Binding Items}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0 3">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Quantite}"
+                                                       Foreground="{StaticResource MutedBrush}" Margin="0 0 6 0" />
+                                            <TextBlock Text="×" Foreground="{StaticResource MutedBrush}" Margin="0 0 6 0" />
+                                            <TextBlock Text="{Binding Produit.Nom}"
+                                                       Foreground="{StaticResource TextBrush}" />
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding SousTotal, StringFormat={}{0:N2} €}"
+                                                   HorizontalAlignment="Right"
+                                                   Foreground="{StaticResource TextBrush}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Rectangle Height="1" Fill="{StaticResource SurfaceBrush}" Margin="0 10" />
+                        <Grid>
+                            <TextBlock Text="TOTAL" FontWeight="Bold" FontSize="16"
+                                       Foreground="{StaticResource TextBrush}" />
+                            <TextBlock Text="{Binding Total, StringFormat={}{0:N2} €}"
+                                       HorizontalAlignment="Right" FontWeight="Bold" FontSize="20"
+                                       Foreground="{StaticResource AccentBrush}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Mode de paiement (3 modes) -->
+                <TextBlock Text="Mode de paiement" Foreground="{StaticResource MutedBrush}"
+                           FontSize="13" Margin="0 0 0 10" />
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 24">
+                    <RadioButton Content="💳  Carte"
+                                 IsChecked="{Binding ModePaiement, Converter={StaticResource EqConverter},
+                                             ConverterParameter='Carte bancaire', Mode=OneWay}"
+                                 Checked="RadioButton_Checked" Tag="Carte bancaire"
+                                 Foreground="{StaticResource TextBrush}" FontSize="13" Margin="0 0 16 0" />
+                    <RadioButton Content="💵  Especes"
+                                 IsChecked="{Binding ModePaiement, Converter={StaticResource EqConverter},
+                                             ConverterParameter='Especes', Mode=OneWay}"
+                                 Checked="RadioButton_Checked" Tag="Especes"
+                                 Foreground="{StaticResource TextBrush}" FontSize="13" Margin="0 0 16 0" />
+                    <RadioButton Content="🎟️  Ticket resto"
+                                 IsChecked="{Binding ModePaiement, Converter={StaticResource EqConverter},
+                                             ConverterParameter='Ticket restaurant', Mode=OneWay}"
+                                 Checked="RadioButton_Checked" Tag="Ticket restaurant"
+                                 Foreground="{StaticResource TextBrush}" FontSize="13" />
+                </StackPanel>
+
+                <!-- Boutons -->
+                <Button Content="✅  Confirmer la commande"
+                        Command="{Binding ConfirmerCommand}"
+                        Style="{StaticResource SuccessButton}"
+                        HorizontalAlignment="Stretch" FontSize="16" Padding="0 16"
+                        Margin="0 0 0 12" />
+                <Button Content="← Retour a la borne"
+                        Command="{Binding AnnulerCommand}"
+                        Style="{StaticResource SecondaryButton}"
+                        HorizontalAlignment="Stretch" FontSize="13" />
+            </StackPanel>
+        </Border>
+    </Grid>
+
+</UserControl>
